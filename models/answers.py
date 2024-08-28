@@ -7,7 +7,7 @@ from models.questions import Questions
 class Answers(Base):
     __tablename__ = 'answers'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    answer = Column(String(255), nullable=False)
+    text = Column(String(255), nullable=False)
     status = Column(Boolean, nullable=False)
     question_id = Column(Integer, nullable=False)
 

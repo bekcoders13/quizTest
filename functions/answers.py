@@ -14,7 +14,7 @@ def get_answers_f(ident, search, page, limit, db):
 
     if search:
         search_formatted = "%{}%".format(search)
-        search_filter = (Answers.answer.like(search_formatted))
+        search_filter = (Answers.text.like(search_formatted))
     else:
         search_filter = Answers.id > 0
 
@@ -28,7 +28,7 @@ def create_answer_f(forms, db):
     for form in forms:
         get_in_db(db, Questions, form.question_id)
         new_item_db = Answers(
-            answer=form.answer,
+            text=form.text,
             status=form.status,
             question_id=form.question_id
         )
@@ -38,7 +38,7 @@ def create_answer_f(forms, db):
 def update_answer_f(form, db):
     get_in_db(db, Questions, form.question_id), get_in_db(db, Answers, form.id)
     db.query(Answers).filter(Answers.id == form.id).update({
-        Answers.answer: form.answer,
+        Answers.text: form.text,
         Answers.status: form.status,
         Answers.question_id: form.question_id
     })

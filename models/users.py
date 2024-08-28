@@ -11,6 +11,7 @@ class Users(Base):
     password = Column(String(255), nullable=False)
     gender = Column(String(50), nullable=False)
     birthdate = Column(Date, nullable=True)
-    address = Column(String(255), nullable=False)
+    region = Column(String(255), nullable=False)
+    town = Column(String(255), nullable=False)
     role = Column(String(255), nullable=False)
     token = Column(String(255), nullable=True)

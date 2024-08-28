@@ -7,7 +7,7 @@ from models.sciences import Sciences
 class Questions(Base):
     __tablename__ = 'questions'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    question = Column(String(255), nullable=False)
+    text = Column(String(255), nullable=False)
     level = Column(String(255), nullable=False)
     science_id = Column(Integer, nullable=False)
 

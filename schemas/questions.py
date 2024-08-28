@@ -2,13 +2,13 @@ from pydantic import BaseModel, Field
 
 
 class CreateQuestion(BaseModel):
-    question: str
+    text: str
     level: str
     science_id: int = Field(..., gt=0)
 
 
 class UpdateQuestion(BaseModel):
     id: int = Field(..., gt=0)
-    question: str
+    text: str
     level: str
     science_id: int = Field(..., gt=0)

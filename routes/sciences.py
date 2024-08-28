@@ -18,8 +18,8 @@ sciences_router = APIRouter(
 
 
 @sciences_router.get('/get')
-def get_science(ident: int = 0, page: int = 1, limit: int = 25, category_id: int = 0,
-                db: Session = Depends(database),
+def get_science(ident: int = 0, category_id: int = 0, page: int = 1,
+                limit: int = 25, db: Session = Depends(database),
                 current_user: CreateUser = Depends(get_current_active_user)):
     role_verification(current_user, inspect.currentframe().f_code.co_name)
     return get_science_f(ident, category_id, page, limit, db)

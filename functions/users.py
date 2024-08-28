@@ -13,7 +13,7 @@ def get_user_f(ident, search, page, limit, role, db):
 
     if search:
         search_formatted = "%{}%".format(search)
-        search_filter = (Users.address.like(search_formatted) |
+        search_filter = (Users.region.like(search_formatted) |
                          Users.username.like(search_formatted))
     else:
         search_filter = Users.id > 0
@@ -36,7 +36,8 @@ def create_user_f(form, db):
         lastname=form.lastname,
         username=form.username,
         gender=form.gender,
-        address=form.address,
+        region=form.region,
+        town=form.town,
         birthdate=form.birthdate,
         role="admin",
         password=get_password_hash(form.password))
@@ -49,7 +50,8 @@ def create_general_user_f(form, db):
         lastname=form.lastname,
         username=form.username,
         gender=form.gender,
-        address=form.address,
+        region=form.region,
+        town=form.town,
         birthdate=form.birthdate,
         role="user",
         password=get_password_hash(form.password))
@@ -62,7 +64,8 @@ def update_user_f(form, db, user):
         Users.lastname: form.lastname,
         Users.gender: form.gender,
         Users.birthdate: form.birthdate,
-        Users.address: form.address,
+        Users.region: form.region,
+        Users.town: form.town,
         Users.password: get_password_hash(form.password),
         Users.role: user.role,
     })
@@ -72,5 +75,3 @@ def update_user_f(form, db, user):
 def delete_user_f(db, user):
     db.query(Users).filter(Users.id == user.id).delete()
     db.commit()
-
-

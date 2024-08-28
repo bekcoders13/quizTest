@@ -1,4 +1,4 @@
-from sqlalchemy.orm import joinedload, load_only
+from sqlalchemy.orm import load_only
 from models.sciences import Sciences
 from utils.db_operations import get_in_db, save_in_db
 from utils.pagination import pagination
@@ -17,13 +17,13 @@ def get_question_f(ident, science_id, level, page, limit, db):
         science_filter = Questions.id > 0
 
     if level:
-        search_formatted = "%{}%".format(level)
-        search_filter = Questions.level.like(search_formatted)
+        level_formatted = "%{}%".format(level)
+        level_filter = Questions.level.like(level_formatted)
     else:
-        search_filter = Questions.id > 0
+        level_filter = Questions.id > 0
 
-    items = (db.query(Questions).options(load_only(Questions.question, Questions.level)).
-             filter(ident_filter, science_filter, search_filter).
+    items = (db.query(Questions).options(load_only(Questions.text, Questions.level)).
+             filter(ident_filter, science_filter, level_filter).
              order_by(Questions.id.desc()))
     return pagination(items, page, limit)
 
@@ -32,7 +32,7 @@ def create_question_f(forms, db):
     for form in forms:
         get_in_db(db, Sciences, form.science_id)
         new_item_db = Questions(
-            question=form.question,
+            text=form.text,
             level=form.level,
             science_id=form.science_id
         )
@@ -43,7 +43,7 @@ def update_question_f(form, db):
     get_in_db(db, Sciences, form.science_id)
     get_in_db(db, Questions, form.id)
     db.query(Questions).filter(Questions.id == form.id).update({
-        Questions.question: form.question,
+        Questions.text: form.text,
         Questions.science_id: form.science_id,
         Questions.level: form.level,
     })

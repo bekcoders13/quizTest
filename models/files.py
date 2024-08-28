@@ -22,7 +22,3 @@ class Files(Base):
                           primaryjoin=lambda: and_(Answers.id == Files.source_id,
                                                    Files.source == "answer"),
                           backref=backref("files"))
-    comment = relationship(argument="Comments", foreign_keys=[source_id], viewonly=True,
-                           primaryjoin=lambda: and_(Comments.id == Files.source_id,
-                                                    Files.source == "comment"),
-                           backref=backref("files"))

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from functions.users import get_user_f, create_user_f, update_user_f, delete_user_f, create_general_user_f
 from routes.login import get_current_active_user
 from utils.role_verification import role_verification
-from schemas.users import CreateUser, UpdateUser, CreateGeneralUser
+from schemas.users import CreateUser, UpdateUser
 from db import database
 
 
@@ -37,7 +37,7 @@ def create_user(form: CreateUser, db: Session = Depends(database),
 
 
 @users_router.post('/sign_up')
-def create_general_user(form: CreateGeneralUser, db: Session = Depends(database)):
+def create_general_user(form: CreateUser, db: Session = Depends(database)):
     create_general_user_f(form, db)
     raise HTTPException(status_code=200, detail="Create Success !!!")
 
