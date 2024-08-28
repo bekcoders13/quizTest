@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from db import engine, Base
 from routes.files import files_router
 from routes.login import login_router
 from routes.users import users_router
@@ -12,6 +13,8 @@ from routes.sciences import sciences_router
 
 
 api = APIRouter()
+
+Base.metadata.create_all(bind=engine)
 
 
 api.include_router(login_router)

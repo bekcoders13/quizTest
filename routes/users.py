@@ -15,11 +15,11 @@ users_router = APIRouter(
 
 
 @users_router.get('/get')
-def get(ident: int = 0, search: str = None,  page: int = 1,
-        limit: int = 25, role: str = None, db: Session = Depends(database),
+def get(ident: int = 0, region: str = None,  page: int = 1,
+        limit: int = 25, db: Session = Depends(database),
         current_user: CreateUser = Depends(get_current_active_user)):
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    return get_user_f(ident, search, page, limit, role, db)
+    return get_user_f(ident, region, page, limit, db)
 
 
 @users_router.get('/get_own')
@@ -29,10 +29,10 @@ def get_own(current_user: CreateUser = Depends(get_current_active_user)):
 
 
 @users_router.post('/create')
-def create_user(form: CreateUser, db: Session = Depends(database),
-                current_user: CreateUser = Depends(get_current_active_user)):
+def create_admin(form: CreateUser, db: Session = Depends(database),
+                 current_user: CreateUser = Depends(get_current_active_user)):
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    create_user_f(form, db)
+    create_user_f(form, current_user, db)
     raise HTTPException(status_code=200, detail="Create Success !!!")
 
 
@@ -56,5 +56,3 @@ def delete_user(db: Session = Depends(database),
     role_verification(current_user, inspect.currentframe().f_code.co_name)
     delete_user_f(db, current_user)
     raise HTTPException(status_code=200, detail="Delete Success !!!")
-
-
