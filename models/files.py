@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship, backref
 
 from db import Base
 from models.answers import Answers
-from models.comments import Comments
 from models.questions import Questions
 
 

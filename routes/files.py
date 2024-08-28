@@ -7,7 +7,6 @@ from fastapi import APIRouter, Depends, HTTPException
 from db import database
 from functions.files import delete_file_f, create_file_f
 from models.answers import Answers
-from models.comments import Comments
 from models.files import Files
 from models.questions import Questions
 from routes.login import get_current_active_user
