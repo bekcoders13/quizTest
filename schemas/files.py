@@ -7,7 +7,6 @@ from pydantic import BaseModel, Field
 class SourceType(Enum):
     question = 'question'
     answer = "answer"
-    comment = "comment"
 
 
 class CreateFiles(BaseModel):
