@@ -29,8 +29,6 @@ async def create_file(form: CreateFiles = Depends(CreateFiles),
         await create_file_f(Questions, 'question', form.new_files, form.source_id, db)
     elif form.source == "answer":
         await create_file_f(Answers, 'answer', form.new_files, form.source_id, db)
-    elif form.source == "comment":
-        await create_file_f(Comments, 'comment', form.new_files, form.source_id, db)
     raise HTTPException(200, "Create Success!!!")
 
 
