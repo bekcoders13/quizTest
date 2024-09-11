@@ -30,7 +30,7 @@ def get_result_f(ident, search, page, limit, db, user):
     items = (db.query(Results)
              .options(joinedload(Results.question),
                       joinedload(Results.answer),
-                      joinedload(Results.category),
+                      joinedload(Results.science),
                       joinedload(Results.user)).filter(ident_filter, search_filter, Results.user_id == user.id)
              .order_by(Results.id.desc()))
 

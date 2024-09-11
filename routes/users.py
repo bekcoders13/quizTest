@@ -22,8 +22,8 @@ def get(ident: int = 0, region: str = None,  page: int = 1,
     return get_user_f(ident, region, page, limit, db)
 
 
-@users_router.get('/get_own')
-def get_own(current_user: CreateUser = Depends(get_current_active_user)):
+@users_router.get('/get_me')
+def get_me(current_user: CreateUser = Depends(get_current_active_user)):
     role_verification(current_user, inspect.currentframe().f_code.co_name)
     return current_user
 

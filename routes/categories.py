@@ -47,5 +47,3 @@ def delete(ident: int = 0, db: Session = Depends(database),
     role_verification(current_user, inspect.currentframe().f_code.co_name)
     delete_category_f(ident, db)
     raise HTTPException(status_code=200, detail="Delete Success !!!")
-
-

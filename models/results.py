@@ -24,5 +24,5 @@ class Results(Base):
     user = relationship("Users", foreign_keys=[user_id],
                         primaryjoin=lambda: Users.id == Results.user_id)
 
-    sciences = relationship("Sciences", foreign_keys=[science_id],
+    science = relationship("Sciences", foreign_keys=[science_id],
                             primaryjoin=lambda: Sciences.id == Results.science_id)

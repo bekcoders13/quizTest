@@ -9,7 +9,7 @@ class Users(Base):
     lastname = Column(String(255), nullable=False)
     username = Column(String(255), nullable=False)
     password = Column(String(255), nullable=False)
-    gender = Column(String(50), nullable=False)
+    gender = Column(String(50), nullable=True)
     birthdate = Column(Date, nullable=True)
     region = Column(String(255), nullable=False)
     town = Column(String(255), nullable=False)

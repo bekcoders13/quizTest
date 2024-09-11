@@ -6,9 +6,8 @@ def role_verification(user, function):
                                    "get_answer", "get_category", "get_question", "get_comment", "get_own",
                                    "update_user", "delete_user", "get_file"]
 
-    if user.role == "admin":
+    if user.role == 'admin':
         return True
-
     elif user.role == "user" and function in allowed_functions_for_users:
         return True
 
