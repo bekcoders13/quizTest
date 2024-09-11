@@ -25,8 +25,10 @@ def get_answer(question_id: int = 0, ident: int = 0, search: str = None,  page: 
                current_user: CreateUser = Depends(get_current_active_user)):
     role_verification(current_user, inspect.currentframe().f_code.co_name)
     if question_id:
-        return (db.query(Answers).options(joinedload(Answers.question).load_only(Questions.question)).
-                filter(Answers.question_id == question_id).all())
+        get_in_db(db, Questions, question_id)
+        items = db.query(Answers).filter(Answers.question_id == question_id).all()
+        random.shuffle(items)
+        return items
     return get_answers_f(ident, search, page, limit, db)
 
 
