@@ -18,8 +18,7 @@ def get_answers_f(ident, search, page, limit, db):
     else:
         search_filter = Answers.id > 0
 
-    items = (db.query(Answers).options(joinedload(Answers.question))
-             .filter(ident_filter, search_filter).order_by(Answers.id.desc()))
+    items = db.query(Answers).filter(ident_filter, search_filter).order_by(Answers.id.desc())
 
     return pagination(items, page, limit)
 
