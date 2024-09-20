@@ -1,28 +1,29 @@
-from sqlalchemy.orm import load_only
-
+from models.categories import Categories
 from utils.db_operations import get_in_db, save_in_db
-from utils.pagination import pagination
 from models.sciences import Sciences
 
+from sqlalchemy.orm import load_only
+from sqlalchemy import desc
+import random
 
-def get_science_f(ident, category_id, page, limit, db):
+
+def get_science_f(ident, page, limit, db):
+    offset_value = (page - 1) * limit
     if ident > 0:
         ident_filter = Sciences.id == ident
     else:
         ident_filter = Sciences.id > 0
 
-    if category_id > 0:
-        category_filter = Sciences.category_id == category_id
-    else:
-        category_filter = Sciences.id > 0
-
-    items = (db.query(Sciences).options(load_only(Sciences.name)).
-             filter(ident_filter, category_filter).order_by(Sciences.id.desc()))
-    return pagination(items, page, limit)
+    items = (db.query(Sciences).options(load_only(Sciences.name))
+             .filter(ident_filter).order_by(desc(Sciences.id))
+             .offset(offset_value).limit(limit).all())
+    random.shuffle(items)
+    return items
 
 
 def create_science_f(forms, db):
     for form in forms:
+        get_in_db(db, Categories, form.category_id)
         new_item_db = Sciences(
             name=form.name,
             category_id=form.category_id,

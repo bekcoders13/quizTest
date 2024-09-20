@@ -1,10 +1,14 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class CreateResult(BaseModel):
-    question_id: int
-    answer_id: int
-    category_id: int
+    found: int
+    option_id: int = Field(..., gt=0)
+    user_id: int = Field(..., gt=0)
 
 
-
+class UpdateResult(BaseModel):
+    ident: int = Field(..., gt=0)
+    found: int
+    option_id: int = Field(..., gt=0)
+    user_id: int = Field(..., gt=0)

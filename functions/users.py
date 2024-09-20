@@ -2,12 +2,11 @@ from fastapi import HTTPException
 
 from routes.login import get_password_hash
 from utils.db_operations import save_in_db
-from utils.pagination import pagination
 from models.users import Users
 
 
-def get_user_f(ident, region, page, limit, db):
-
+async def get_user_f(ident, region, page, limit, db):
+    offset_value = (page - 1) * limit
     if ident > 0:
         ident_filter = Users.id == ident
     else:
@@ -16,16 +15,17 @@ def get_user_f(ident, region, page, limit, db):
     if region:
         search_formatted = "%{}%".format(region)
         search_filter = (Users.region.like(search_formatted) |
-                         Users.username.like(search_formatted))
+                         Users.firstname.like(search_formatted) |
+                         Users.lastname.like(search_formatted))
     else:
         search_filter = Users.id > 0
 
-    items = db.query(Users).filter(ident_filter, search_filter).order_by(Users.id.desc())
+    items = (db.query(Users).filter(ident_filter, search_filter).order_by(Users.id.desc())
+             .offset(offset_value).limit(limit).all())
+    return items
 
-    return pagination(items, page, limit)
 
-
-def create_user_f(form, user, db):
+async def create_user_f(form, user, db):
     if user.role == 'admin':
         new_item_db = Users(
             firstname=form.firstname,
@@ -42,7 +42,7 @@ def create_user_f(form, user, db):
         raise HTTPException(400, "not authentication")
 
 
-def create_general_user_f(form, db):
+async def create_general_user_f(form, db):
     new_item_db = Users(
         firstname=form.firstname,
         lastname=form.lastname,
@@ -56,7 +56,7 @@ def create_general_user_f(form, db):
     save_in_db(db, new_item_db)
 
 
-def update_user_f(form, db, user):
+async def update_user_f(form, db, user):
     db.query(Users).filter(Users.id == user.id).update({
         Users.firstname: form.firstname,
         Users.lastname: form.lastname,
@@ -69,6 +69,6 @@ def update_user_f(form, db, user):
     db.commit()
 
 
-def delete_user_f(db, user):
+async def delete_user_f(db, user):
     db.query(Users).filter(Users.id == user.id).delete()
     db.commit()

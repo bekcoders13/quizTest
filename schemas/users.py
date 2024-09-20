@@ -1,4 +1,3 @@
-from datetime import date
 from pydantic import BaseModel, validator
 
 from models.users import Users
@@ -12,7 +11,7 @@ class CreateUser(BaseModel):
     lastname: str
     username: str
     password: str
-    birthdate: date
+    birthdate: str
     gender: str
     region: str
     town: str
@@ -30,7 +29,7 @@ class CreateUser(BaseModel):
     @validator('password')
     def password_validate(cls, password):
         if len(password) < 8:
-            raise ValueError('Parol 8 tadan kam bo`lmasligi kerak')
+            raise ValueError('Parol 8 belgidan kam bo`lmasligi kerak')
         return password
 
 
@@ -38,7 +37,7 @@ class UpdateUser(BaseModel):
     firstname: str
     lastname: str
     password: str
-    birthdate: date
+    birthdate: str
     gender: str
     region: str
     town: str
@@ -46,5 +45,5 @@ class UpdateUser(BaseModel):
     @validator('password')
     def password_validate(cls, password):
         if len(password) < 8:
-            raise ValueError('Parol 8 tadan kam bo`lmasligi kerak')
+            raise ValueError('Parol 8 belgidan kam bo`lmasligi kerak')
         return password

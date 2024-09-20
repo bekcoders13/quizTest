@@ -1,8 +1,11 @@
 import inspect
-from typing import List
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from functions.results import get_result_f, create_result_f
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session, joinedload
+
+from functions.results import add_result_f
+from models.finalresult import FinalResults
+from models.results import Results
+from models.users import Users
 from routes.login import get_current_active_user
 from utils.role_verification import role_verification
 from schemas.results import CreateResult
@@ -12,20 +15,29 @@ from db import database
 
 results_router = APIRouter(
     prefix="/results",
-    tags=["Results operation"]
+    tags=["natijalar, natija qo'shish va ularni ko'rish"]
 )
 
 
 @results_router.get('/get')
-def get_result(ident: int = 0, search: str = None,  page: int = 1,
-               limit: int = 25, db: Session = Depends(database),
-               current_user: CreateUser = Depends(get_current_active_user)):
-    role_verification(current_user, inspect.currentframe().f_code.co_name)
-    return get_result_f(ident, search, page, limit, db, current_user)
+async def get_result(db: Session = Depends(database),
+                     current_user: CreateUser = Depends(get_current_active_user)):
+    await role_verification(current_user, inspect.currentframe().f_code.co_name)
+    item = db.query(Results).all()
+    return item
 
 
 @results_router.post('/create')
-def create_result_t(forms: List[CreateResult], db: Session = Depends(database),
-                    current_user: CreateUser = Depends(get_current_active_user)):
-    role_verification(current_user, inspect.currentframe().f_code.co_name)
-    return create_result_f(forms, db, current_user)
+async def add_result(form: CreateResult, db: Session = Depends(database),
+                     current_user: CreateUser = Depends(get_current_active_user)):
+    await role_verification(current_user, inspect.currentframe().f_code.co_name)
+    await add_result_f(form, db)
+
+
+@results_router.get('/get_final_result')
+async def get_common_result(db: Session = Depends(database),
+                            current_user: CreateUser = Depends(get_current_active_user)):
+    await role_verification(current_user, inspect.currentframe().f_code.co_name)
+    items = (db.query(FinalResults).
+             options(joinedload(FinalResults.user).load_only(Users.firstname, Users.lastname)).all())
+    return items

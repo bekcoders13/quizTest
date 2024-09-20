@@ -1,6 +1,6 @@
 import inspect
 from typing import List
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
 
 from functions.sciences import get_science_f, create_science_f, update_science_f, delete_science_f
@@ -13,16 +13,16 @@ from db import database
 
 sciences_router = APIRouter(
     prefix="/sciences",
-    tags=["Sciences operation"]
+    tags=["Fanlar"]
 )
 
 
 @sciences_router.get('/get')
-def get_science(ident: int = 0, category_id: int = 0, page: int = 1,
-                limit: int = 25, db: Session = Depends(database),
-                current_user: CreateUser = Depends(get_current_active_user)):
-    role_verification(current_user, inspect.currentframe().f_code.co_name)
-    return get_science_f(ident, category_id, page, limit, db)
+async def get_science(ident: int = 0, page: int = Query(1),
+                      limit: int = Query(10), db: Session = Depends(database),
+                      current_user: CreateUser = Depends(get_current_active_user)):
+    await role_verification(current_user, inspect.currentframe().f_code.co_name)
+    return get_science_f(ident, page, limit, db)
 
 
 @sciences_router.post('/create')

@@ -1,28 +1,34 @@
 import os
+from datetime import datetime
+import aiofiles
+
 from models.files import Files
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
+from utils.db_operations import save_in_db, get_in_db
 
 
-def create_file_f(model, name, new_files, ident, db):
-    if db.query(model).filter(model.id == ident).first() is None:
-        raise HTTPException(400, "Fayl biriktiriladigan ma'lumot topilmadi !!!")
-    uploaded_file_objects = []
-    for new_file in new_files:
-        ext = os.path.splitext(new_file.filename)[-1].lower()
-        if ext not in [".jpg", ".png", ".mp3", ".mp4", ".gif", ".jpeg"]:
-            raise HTTPException(400, "Fayl formati mos kelmadi !!!")
-        file_location = f"files/{new_file.filename}"
-        with open(file_location, "wb+") as file_object:
-            file_object.write(new_file.file.read())
+def save_file_db(source, source_id, name, filename, db):
+    get_in_db(db, source, source_id)
+    new_db = Files(
+        new_files=filename,
+        source_id=source_id,
+        source=name
+    )
+    save_in_db(db, new_db)
 
-        new_db = Files(
-            new_files=new_file.filename,
-            source_id=ident,
-            source=name
-        )
-        uploaded_file_objects.append(new_db)
-    db.add_all(uploaded_file_objects)
-    db.commit()
+
+async def save_file(file: UploadFile) -> str:
+    if not file.filename.lower().endswith((".png", ".jpg", ".jpeg", ".mp4")):
+        raise HTTPException(status_code=400, detail="Fayl formati mos emas")
+
+    _, file_extension = os.path.splitext(file.filename)
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    unique_filename = f"{timestamp}{file_extension}"
+    image_path = os.path.join('files', unique_filename)
+
+    async with aiofiles.open(image_path, "wb") as buffer:
+        await buffer.write(await file.read())
+    return unique_filename
 
 
 def delete_file_f(file_id: int, db):

@@ -13,40 +13,36 @@ from db import database
 
 questions_router = APIRouter(
     prefix="/questions",
-    tags=["Questions operation"]
+    tags=["Savollar"]
 )
 
 
 @questions_router.get('/get')
-def get_question(level: str = None, ident: int = 0, science_id: int = 0,
-                 page: int = 1, limit: int = 25,
-                 db: Session = Depends(database),
-                 current_user: CreateUser = Depends(get_current_active_user)):
-    role_verification(current_user, inspect.currentframe().f_code.co_name)
-    return get_question_f(ident, science_id, level, page, limit, db)
+async def get_question(ident: int = 0, db: Session = Depends(database),
+                       current_user: CreateUser = Depends(get_current_active_user)):
+    await role_verification(current_user, inspect.currentframe().f_code.co_name)
+    return get_question_f(ident, db)
 
 
 @questions_router.post('/create')
-def create(forms: List[CreateQuestion], db: Session = Depends(database),
-           current_user: CreateUser = Depends(get_current_active_user)):
-    role_verification(current_user, inspect.currentframe().f_code.co_name)
+async def create(forms: List[CreateQuestion], db: Session = Depends(database),
+                 current_user: CreateUser = Depends(get_current_active_user)):
+    await role_verification(current_user, inspect.currentframe().f_code.co_name)
     create_question_f(forms, db)
     raise HTTPException(status_code=200, detail="Create Success !!!")
 
 
 @questions_router.put("/update")
-def update(form: UpdateQuestion, db: Session = Depends(database),
-           current_user: CreateUser = Depends(get_current_active_user)):
-    role_verification(current_user, inspect.currentframe().f_code.co_name)
+async def update(form: UpdateQuestion, db: Session = Depends(database),
+                 current_user: CreateUser = Depends(get_current_active_user)):
+    await role_verification(current_user, inspect.currentframe().f_code.co_name)
     update_question_f(form, db)
     raise HTTPException(status_code=200, detail="Update Success !!!")
 
 
 @questions_router.delete("/delete")
-def delete(ident: int = 0, db: Session = Depends(database),
-           current_user: CreateUser = Depends(get_current_active_user)):
-    role_verification(current_user, inspect.currentframe().f_code.co_name)
+async def delete(ident: int = 0, db: Session = Depends(database),
+                 current_user: CreateUser = Depends(get_current_active_user)):
+    await role_verification(current_user, inspect.currentframe().f_code.co_name)
     delete_question_f(ident, db)
     raise HTTPException(status_code=200, detail="Delete Success !!!")
-
-

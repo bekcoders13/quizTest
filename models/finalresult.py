@@ -1,15 +1,14 @@
+from sqlalchemy import Column, Integer
 from sqlalchemy.orm import relationship
+
 from db import Base
-from sqlalchemy import Column, Integer, Double
 from models.users import Users
 
 
 class FinalResults(Base):
-    __tablename__ = 'final_results'
+    __tablename__ = 'finalresults'
     id = Column(Integer, primary_key=True, autoincrement=True)
     common = Column(Integer, nullable=False)
-    found = Column(Integer, nullable=False)
-    percent = Column(Double, nullable=False)
     user_id = Column(Integer, nullable=False)
 
     user = relationship("Users", foreign_keys=[user_id],

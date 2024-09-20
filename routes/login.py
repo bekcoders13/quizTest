@@ -22,7 +22,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
-login_router = APIRouter(tags=['Login and Refresh token'])
+login_router = APIRouter(tags=['Kirish va tokenni yangilash'])
 
 
 def get_password_hash(password):
@@ -62,6 +62,17 @@ def get_current_user(db: Session = Depends(database), token: str = Depends(oauth
 
 async def get_current_active_user(current_user: CreateUser = Depends(get_current_user)):
     return current_user
+
+
+@login_router.get("/check_user")
+def username_validate(username: str, db: Session = Depends(database)):
+    validate_my = db.query(Users).filter(
+        Users.username == username,
+    ).count()
+
+    if validate_my != 0:
+        raise HTTPException(400, 'Bunday login avval ro`yxatga olingan!')
+    return {"username": username}
 
 
 @login_router.post("/token")

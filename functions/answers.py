@@ -1,11 +1,12 @@
+import random
+
 from models.answers import Answers
 from utils.db_operations import get_in_db, save_in_db
-from utils.pagination import pagination
 from models.questions import Questions
 
 
 def get_answers_f(ident, search, page, limit, db):
-
+    offset_value = (page - 1) * limit
     if ident > 0:
         ident_filter = Answers.id == ident
     else:
@@ -17,9 +18,10 @@ def get_answers_f(ident, search, page, limit, db):
     else:
         search_filter = Answers.id > 0
 
-    items = db.query(Answers).filter(ident_filter, search_filter).order_by(Answers.id.desc())
-
-    return pagination(items, page, limit)
+    items = (db.query(Answers).filter(ident_filter, search_filter).
+             offset(offset_value).limit(limit).all())
+    random.shuffle(items)
+    return items
 
 
 def create_answer_f(forms, db):
