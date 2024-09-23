@@ -1,27 +1,17 @@
-import random
-
 from models.answers import Answers
 from utils.db_operations import get_in_db, save_in_db
 from models.questions import Questions
 
 
-def get_answers_f(ident, search, page, limit, db):
+def get_answers_f(ident, page, limit, db):
     offset_value = (page - 1) * limit
     if ident > 0:
         ident_filter = Answers.id == ident
     else:
         ident_filter = Answers.id > 0
 
-    if search:
-        search_formatted = "%{}%".format(search)
-        search_filter = (Answers.text.like(search_formatted))
-    else:
-        search_filter = Answers.id > 0
-
-    items = (db.query(Answers).filter(ident_filter, search_filter).
-             offset(offset_value).limit(limit).all())
-    random.shuffle(items)
-    return items
+    return (db.query(Answers).filter(ident_filter).order_by(Answers.id.desc())
+            .offset(offset_value).limit(limit).all())
 
 
 def create_answer_f(forms, db):

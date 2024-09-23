@@ -1,5 +1,4 @@
 import inspect
-import random
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
@@ -17,34 +16,33 @@ from db import database
 
 answers_router = APIRouter(
     prefix="/answers",
-    tags=["Variyantlar"]
+    tags=["Javoblar"]
 )
 
 
 @answers_router.get('/get')
-async def variyantlarni_korish(question_id: int = 0, ident: int = 0, search: str = None,  page: int = Query(1),
-                               limit: int = Query(25), db: Session = Depends(database),
-                               current_user: CreateUser = Depends(get_current_active_user)):
+async def javoblarni_korish(question_id: int = 0, ident: int = 0, page: int = Query(1),
+                            limit: int = Query(25), db: Session = Depends(database),
+                            current_user: CreateUser = Depends(get_current_active_user)):
     await role_verification(current_user, inspect.currentframe().f_code.co_name)
     if question_id:
         await get_in_db(db, Questions, question_id)
-        items = db.query(Answers).filter(Answers.question_id == question_id).all()
-        random.shuffle(items)
-        return items
-    return get_answers_f(ident, search, page, limit, db)
+        return db.query(Answers).filter(Answers.question_id == question_id).all()
+
+    return get_answers_f(ident, page, limit, db)
 
 
-@answers_router.post('/create_answer')
-async def variyant_qoshish(form: List[CreateAnswer], db: Session = Depends(database),
-                           current_user: CreateUser = Depends(get_current_active_user)):
+@answers_router.post('/create')
+async def javob_qoshish(form: List[CreateAnswer], db: Session = Depends(database),
+                        current_user: CreateUser = Depends(get_current_active_user)):
     await role_verification(current_user, inspect.currentframe().f_code.co_name)
     create_answer_f(form, db)
     raise HTTPException(status_code=200, detail="Create Success !!!")
 
 
 @answers_router.put("/update")
-async def variyant_yangilash(form: UpdateAnswer, db: Session = Depends(database),
-                             current_user: CreateUser = Depends(get_current_active_user)):
+async def yangilash(form: UpdateAnswer, db: Session = Depends(database),
+                    current_user: CreateUser = Depends(get_current_active_user)):
     await role_verification(current_user, inspect.currentframe().f_code.co_name)
     update_answer_f(form, db)
     raise HTTPException(status_code=200, detail="Update Success !!!")

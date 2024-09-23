@@ -4,7 +4,6 @@ from models.sciences import Sciences
 
 from sqlalchemy.orm import load_only
 from sqlalchemy import desc
-import random
 
 
 def get_science_f(ident, page, limit, db):
@@ -17,7 +16,6 @@ def get_science_f(ident, page, limit, db):
     items = (db.query(Sciences).options(load_only(Sciences.name))
              .filter(ident_filter).order_by(desc(Sciences.id))
              .offset(offset_value).limit(limit).all())
-    random.shuffle(items)
     return items
 
 
@@ -34,8 +32,7 @@ def create_science_f(forms, db):
 def update_science_f(form, db):
     get_in_db(db, Sciences, form.id)
     db.query(Sciences).filter(Sciences.id == form.id).update({
-        Sciences.name: form.name,
-        Sciences.category_id: form.category_id,
+        Sciences.name: form.name
     })
     db.commit()
 
@@ -44,5 +41,3 @@ def delete_science_f(ident, db):
     get_in_db(db, Sciences, ident)
     db.query(Sciences).filter(Sciences.id == ident).delete()
     db.commit()
-
-

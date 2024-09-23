@@ -1,13 +1,10 @@
 from sqlalchemy import create_engine
-import pymysql
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import pymysql
 
-engine = create_engine("sqlite:///./database.db",
-                       connect_args={"check_same_thread": False})
+engine = create_engine('mysql+pymysql://root:root@localhost/test_db')
 SessionLocal = sessionmaker(bind=engine)
-
-
 Base = declarative_base()
 
 

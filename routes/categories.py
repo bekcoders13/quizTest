@@ -18,7 +18,7 @@ categories_router = APIRouter(
 
 
 @categories_router.get('/get')
-async def get(ident: int = 0, science_id: int = 0, db: AsyncSession = Depends(database),
+async def get(science_id: int, ident: int = 0, db: AsyncSession = Depends(database),
               current_user: CreateUser = Depends(get_current_active_user)):
     await role_verification(current_user, inspect.currentframe().f_code.co_name)
     item = await get_categories_f(ident, science_id, db)
