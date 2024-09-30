@@ -48,7 +48,7 @@ async def create_option(forms: List[CreateOptions], db: Session = Depends(databa
     await role_verification(current_user, inspect.currentframe().f_code.co_name)
     for form in forms:
         await get_in_db(db, Categories, form.category_id)
-        item = db.query(Options).filter(Options.name == form.name, Options.category_id == form.category_id).first()
+        item = db.query(Options).filter(Options.name == form.name, Options.science_id == form.science_id).first()
         if item:
             raise HTTPException(400, 'bu variyant mavjud')
 
