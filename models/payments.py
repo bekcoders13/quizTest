@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from db import Base
 from models.plans import Plans
-from models.users import Users
+from models.user import Users
 
 
 class Payments(Base):

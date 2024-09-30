@@ -13,6 +13,7 @@ from routes.tests import tests_router
 from routes.user import users_router
 from routes.teacher import teachers_router
 from routes.course import courses_router
+from routes.app_about import app_about_router
 
 api = APIRouter()
 
@@ -30,3 +31,4 @@ api.include_router(results_router)
 api.include_router(files_router)
 api.include_router(teachers_router)
 api.include_router(courses_router)
+api.include_router(app_about_router)

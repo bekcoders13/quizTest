@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, Text, DateTime, String
 from sqlalchemy.orm import relationship
 
 from db import Base
-from models.users import Users
+from models.user import Users
 
 
 class SmsQueue(Base):

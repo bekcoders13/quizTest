@@ -4,7 +4,7 @@ from fastapi import HTTPException
 async def role_verification(user, function):
     allowed_functions_for_users = ["get_category", "get_science", 'get_option', "get_question",
                                    "get_answer", 'get_test_f', "add_result", "get_common_result",
-                                   "get_file", 'create_file', 'delete_file',
+                                   "get_file", 'create_file', 'delete_file', 'get_app_about',
                                    "get_me", "update_user", "delete_user", "update_role_f",]
 
     allowed_functions_for_editor = ["get_category", "get_science", 'create_science', 'update_science',
