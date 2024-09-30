@@ -3,3 +3,6 @@ starlette~=0.38.6
 pydantic~=2.9.2
 SQLAlchemy~=2.0.35
 python-jose~=3.3.0
+uvicorn~=0.25.0
+passlib~=1.7.4
+aiofiles~=24.1.0
