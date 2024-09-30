@@ -1,5 +1,3 @@
-from fastapi import HTTPException
-
 from routes.login import get_password_hash
 from utils.db_operations import save_in_db
 from models.users import Users
@@ -25,28 +23,11 @@ async def get_user_f(ident, region, page, limit, db):
     return items
 
 
-async def create_user_f(form, user, db):
-    if user.role == 'admin':
-        new_item_db = Users(
-            firstname=form.firstname,
-            lastname=form.lastname,
-            username=form.username,
-            gender=form.gender,
-            region=form.region,
-            town=form.town,
-            birthdate=form.birthdate,
-            role="admin",
-            password=get_password_hash(form.password))
-        save_in_db(db, new_item_db)
-    else:
-        raise HTTPException(400, "not authentication")
-
-
 async def create_general_user_f(form, db):
     new_item_db = Users(
         firstname=form.firstname,
         lastname=form.lastname,
-        username=form.username,
+        phone_number=form.phone_number,
         gender=form.gender,
         region=form.region,
         town=form.town,

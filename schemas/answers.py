@@ -7,8 +7,5 @@ class CreateAnswer(BaseModel):
     question_id: int
 
 
-class UpdateAnswer(BaseModel):
+class UpdateAnswer(CreateAnswer):
     id: int
-    text: str
-    status: bool
-    question_id: int

@@ -5,14 +5,14 @@ from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session, load_only
 
 from functions.questions import delete_question_f
-from models.categories import Categories
-from models.options import Options
-from models.questions import Questions
+from models.category import Categories
+from models.option import Options
+from models.question import Questions
 from routes.login import get_current_active_user
 from schemas.options import CreateOptions
 from utils.db_operations import get_in_db, save_in_db
 from utils.role_verification import role_verification
-from schemas.users import CreateUser
+from schemas.user import CreateUser
 from db import database
 
 
@@ -23,7 +23,7 @@ options_router = APIRouter(
 
 
 @options_router.get('/get')
-async def get_option(category_id: int, ident: int = 0, page: int = Query(1), limit: int = Query(40),
+async def get_option(science_id: int, ident: int = 0, page: int = Query(1), limit: int = Query(40),
                      db: Session = Depends(database),
                      current_user: CreateUser = Depends(get_current_active_user)):
     await role_verification(current_user, inspect.currentframe().f_code.co_name)
@@ -32,12 +32,12 @@ async def get_option(category_id: int, ident: int = 0, page: int = Query(1), lim
         ident_filter = Options.id == ident
     else:
         ident_filter = Options.id > 0
-    if category_id > 0:
-        category_filter = Options.category_id == category_id
+    if science_id > 0:
+        science_filter = Options.science_id == science_id
     else:
-        category_filter = Options.id > 0
+        science_filter = Options.id > 0
     item = (db.query(Options).options(load_only(Options.name))
-            .filter(category_filter, ident_filter)
+            .filter(science_filter, ident_filter)
             .offset(offset).limit(limit).all())
     return item
 
@@ -54,7 +54,7 @@ async def create_option(forms: List[CreateOptions], db: Session = Depends(databa
 
         new_item = Options(
             name=form.name,
-            category_id=form.category_id
+            science_id=form.science_id
         )
         save_in_db(db, new_item)
     raise HTTPException(200, 'Create Success')

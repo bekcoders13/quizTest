@@ -2,8 +2,10 @@ from sqlalchemy import Column, Integer, String, and_, Text
 from sqlalchemy.orm import relationship, backref
 
 from db import Base
-from models.answers import Answers
-from models.questions import Questions
+from models.course import Courses
+from models.option import Options
+from models.science import Sciences
+from models.user import Users
 
 
 class Files(Base):
@@ -13,11 +15,22 @@ class Files(Base):
     source = Column(String(55), nullable=False)
     source_id = Column(Integer, nullable=False)
 
-    question = relationship(argument="Questions", foreign_keys=[source_id], viewonly=True,
-                            primaryjoin=lambda: and_(Questions.id == Files.source_id,
-                                                     Files.source == "question"),
-                            backref=backref("files"))
-    answer = relationship(argument="Answers", foreign_keys=[source_id], viewonly=True,
-                          primaryjoin=lambda: and_(Answers.id == Files.source_id,
-                                                   Files.source == "answer"),
+    science = relationship(argument="Sciences", foreign_keys=[source_id], viewonly=True,
+                           primaryjoin=lambda: and_(Sciences.id == Files.source_id,
+                                                    Files.source == "science"),
+                           backref=backref("files"))
+
+    user = relationship(argument="Users", foreign_keys=[source_id], viewonly=True,
+                        primaryjoin=lambda: and_(Users.id == Files.source_id,
+                                                 Files.source == "user"),
+                        backref=backref("files"))
+
+    course = relationship(argument="Courses", foreign_keys=[source_id], viewonly=True,
+                          primaryjoin=lambda: and_(Courses.id == Files.source_id,
+                                                   Files.source == "course"),
+                          backref=backref("files"))
+
+    option = relationship(argument="Options", foreign_keys=[source_id], viewonly=True,
+                          primaryjoin=lambda: and_(Options.id == Files.source_id,
+                                                   Files.source == "option"),
                           backref=backref("files"))

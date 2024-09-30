@@ -1,6 +1,6 @@
-from models.answers import Answers
+from models.answer import Answers
 from utils.db_operations import get_in_db, save_in_db
-from models.questions import Questions
+from models.question import Questions
 
 
 def get_answers_f(ident, page, limit, db):

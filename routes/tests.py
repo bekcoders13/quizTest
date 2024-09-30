@@ -2,11 +2,11 @@ import inspect
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session, load_only
 
-from models.answers import Answers
-from models.questions import Questions
+from models.answer import Answers
+from models.question import Questions
 from routes.login import get_current_active_user
 from utils.role_verification import role_verification
-from schemas.users import CreateUser
+from schemas.user import CreateUser
 from db import database
 
 

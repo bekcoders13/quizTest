@@ -3,30 +3,22 @@ from typing import Optional
 from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from sqlalchemy.orm.session import Session
 from db import database
-from models.users import Users
-from schemas.tokens import TokenData, Token
-from schemas.users import CreateUser
+from models.user import Users
+from schemas.token import TokenData, Token
+from schemas.user import CreateUser
+from utils.hash_password import pwd_context
 
 session = Session()
-
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 600
 
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
-login_router = APIRouter(tags=['Kirish va tokenni yangilash'])
-
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
+login_router = APIRouter(tags=['Login and Refresh token'])
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -48,13 +40,13 @@ def get_current_user(db: Session = Depends(database), token: str = Depends(oauth
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: Optional[str] = payload.get("sub")
-        if username is None:
+        phone_number: Optional[str] = payload.get("sub")
+        if phone_number is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(phone_number=phone_number)
     except JWTError:
         raise credentials_exception
-    user = db.query(Users).where(Users.username == token_data.username).first()
+    user = db.query(Users).where(Users.phone_number == token_data.phone_number).first()
     if user is None:
         raise credentials_exception
     return user
@@ -64,20 +56,9 @@ async def get_current_active_user(current_user: CreateUser = Depends(get_current
     return current_user
 
 
-@login_router.get("/check_user")
-def username_validate(username: str, db: Session = Depends(database)):
-    validate_my = db.query(Users).filter(
-        Users.username == username,
-    ).count()
-
-    if validate_my != 0:
-        raise HTTPException(400, 'Bunday login avval ro`yxatga olingan!')
-    return {"username": username}
-
-
 @login_router.post("/token")
 async def login_for_access_token(db: Session = Depends(database), form_data: OAuth2PasswordRequestForm = Depends()):
-    user = db.query(Users).where(Users.username == form_data.username).first()
+    user = db.query(Users).filter(Users.phone_number == form_data.username).first()
     if user:
         is_validate_password = pwd_context.verify(form_data.password, user.password)
     else:
@@ -92,13 +73,13 @@ async def login_for_access_token(db: Session = Depends(database), form_data: OAu
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data={"sub": user.phone_number}, expires_delta=access_token_expires
     )
     db.query(Users).filter(Users.id == user.id).update({
         Users.token: access_token
     })
     db.commit()
-    return {'id': user.id, "access_token": access_token, "token_type": "bearer", "role": user.role}
+    return {'id': user.id, "access_token": access_token, "token_type": "bearer"}
 
 
 def token_has_expired(token: str) -> bool:
@@ -130,7 +111,7 @@ async def refresh_token(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username},
+        data={"sub": user.phone_number},
         expires_delta=access_token_expires
     )
     db.query(Users).filter(Users.id == user.id).update({
@@ -141,6 +122,5 @@ async def refresh_token(
     return {
         'id': user.id,
         "access_token": access_token,
-        "user_role": user.role,
         "token_type": "bearer"
     }

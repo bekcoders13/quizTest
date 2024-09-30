@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.ext.asyncio import engine
 
-from db import Base
-from routers import api
+from router import api
 
 
 description = """
@@ -18,7 +16,7 @@ app = FastAPI(
     description=description,
     contact={
         'name': "Asilbek Tojialiyev's telegram account url for questions",
-        'url': 'https://t.me/Tojaliyev25',
+        'url': 'https://t.me/fastapi_deveIoper',
     },
     docs_url='/',
     redoc_url='/redoc',

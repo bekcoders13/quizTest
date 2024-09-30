@@ -6,12 +6,12 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from db import database
 from functions.files import delete_file_f, save_file, save_file_db
-from models.answers import Answers
+from models.answer import Answers
 from models.files import Files
-from models.questions import Questions
+from models.question import Questions
 from routes.login import get_current_active_user
 from schemas.files import CreateFiles
-from schemas.users import CreateUser
+from schemas.user import CreateUser
 from utils.role_verification import role_verification
 
 files_router = APIRouter(
@@ -52,8 +52,8 @@ async def get_file(fileName: str,
 
 
 @files_router.delete("/delete_file")
-async def delete(ident: int, db: Session = Depends(database),
-                 c_user: CreateUser = Depends(get_current_active_user)):
+async def delete_file(ident: int, db: Session = Depends(database),
+                      c_user: CreateUser = Depends(get_current_active_user)):
     await role_verification(c_user, inspect.currentframe().f_code.co_name)
     delete_file_f(ident, db)
     raise HTTPException(200, "Success !!!")

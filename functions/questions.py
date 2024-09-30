@@ -1,9 +1,9 @@
 from sqlalchemy import desc
 
-from models.answers import Answers
-from models.options import Options
+from models.answer import Answers
+from models.option import Options
 from utils.db_operations import get_in_db, save_in_db
-from models.questions import Questions
+from models.question import Questions
 
 
 def get_question_f(ident, db):

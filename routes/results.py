@@ -1,21 +1,21 @@
 import inspect
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session, joinedload
 
 from functions.results import add_result_f
 from models.finalresult import FinalResults
-from models.results import Results
-from models.users import Users
+from models.result import Results
+from models.user import Users
 from routes.login import get_current_active_user
 from utils.role_verification import role_verification
 from schemas.results import CreateResult
-from schemas.users import CreateUser
+from schemas.user import CreateUser
 from db import database
 
 
 results_router = APIRouter(
     prefix="/results",
-    tags=["natijalar, natija qo'shish va ularni ko'rish"]
+    tags=["Yetakchilar, natija qo'shish va ularni ko'rish"]
 )
 
 

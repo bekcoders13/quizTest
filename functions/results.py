@@ -1,5 +1,5 @@
 from models.finalresult import FinalResults
-from models.results import Results
+from models.result import Results
 from utils.db_operations import save_in_db
 
 from sqlalchemy.exc import SQLAlchemyError
