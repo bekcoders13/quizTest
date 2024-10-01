@@ -8,6 +8,7 @@ from functions.questions import delete_question_f
 from models.category import Categories
 from models.option import Options
 from models.question import Questions
+from models.science import Sciences
 from routes.login import get_current_active_user
 from schemas.options import CreateOptions
 from utils.db_operations import get_in_db, save_in_db
@@ -47,7 +48,7 @@ async def create_option(forms: List[CreateOptions], db: Session = Depends(databa
                         current_user: CreateUser = Depends(get_current_active_user)):
     await role_verification(current_user, inspect.currentframe().f_code.co_name)
     for form in forms:
-        await get_in_db(db, Categories, form.category_id)
+        await get_in_db(db, Sciences, form.science_id)
         item = db.query(Options).filter(Options.name == form.name, Options.science_id == form.science_id).first()
         if item:
             raise HTTPException(400, 'bu variyant mavjud')

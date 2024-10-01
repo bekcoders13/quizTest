@@ -1,4 +1,6 @@
 import inspect
+from http.client import HTTPException
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session, joinedload
 
@@ -32,6 +34,7 @@ async def add_result(form: CreateResult, db: Session = Depends(database),
                      current_user: CreateUser = Depends(get_current_active_user)):
     await role_verification(current_user, inspect.currentframe().f_code.co_name)
     await add_result_f(form, db)
+    raise HTTPException(200, "Success")
 
 
 @results_router.get('/get_final_result')

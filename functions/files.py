@@ -18,7 +18,7 @@ def save_file_db(source, source_id, name, filename, db):
 
 
 async def save_file(file: UploadFile) -> str:
-    if not file.filename.lower().endswith((".png", ".jpg", ".jpeg", ".mp4")):
+    if not file.filename.lower().endswith((".png", ".jpg", ".jpeg", ".mp4", '.pdf')):
         raise HTTPException(status_code=400, detail="Fayl formati mos emas")
 
     _, file_extension = os.path.splitext(file.filename)
